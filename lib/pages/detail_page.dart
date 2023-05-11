@@ -20,8 +20,17 @@ class DetailPage extends StatelessWidget {
     const baseTextStyle = TextStyle(fontWeight: FontWeight.bold, fontSize: 24);
 
     return FutureBuilder(
-      future: _getCharacter(1),
+      future: _getCharacter(84),
       builder: (context, snapshot) {
+        late Color badgeColor;
+        if (snapshot.data!.status == 'Alive') {
+          badgeColor = Colors.lightGreenAccent;
+        } else if (snapshot.data!.status == 'Dead') {
+          badgeColor = Colors.redAccent;
+        } else {
+          badgeColor = Colors.grey;
+        }
+
         return Scaffold(
           extendBodyBehindAppBar: true,
           body: snapshot.hasData
@@ -59,12 +68,30 @@ class DetailPage extends StatelessWidget {
                                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      Center(child: Text(snapshot.data!.name, style: baseTextStyle)),
+                                      Center(
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Text(snapshot.data!.name, style: baseTextStyle),
+                                        ),
+                                      ),
                                       const SizedBox(
                                         height: 20,
                                       ),
-                                      Text('Status: ${snapshot.data!.status}',
-                                          style: baseTextStyle.copyWith(fontWeight: FontWeight.normal)),
+                                      Row(
+                                        children: [
+                                          Text('Status: ',
+                                              style: baseTextStyle.copyWith(fontWeight: FontWeight.normal)),
+                                          Card(
+                                            color: badgeColor,
+                                            child: Padding(
+                                              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                                              child: Text(snapshot.data!.status,
+                                                  style: baseTextStyle.copyWith(
+                                                      fontWeight: FontWeight.normal, color: Colors.black87)),
+                                            ),
+                                          )
+                                        ],
+                                      ),
                                       Text('Species: ${snapshot.data!.species}',
                                           style: baseTextStyle.copyWith(fontWeight: FontWeight.normal)),
                                       Text('Gender: ${snapshot.data!.gender}',
